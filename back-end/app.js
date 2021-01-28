@@ -153,4 +153,34 @@ app.get("/seeker_requests", (req, res) => {
 		.catch((err) => console.log(err));
 });
 
+app.post("/searchDonor", (req, res) => {
+	const { district, seekingBloodGroup } = req.body;
+	const db = dbService.getDbServiceInstance();
+
+	const result = db.searchDonor(district, seekingBloodGroup);
+
+	result
+		.then((data) => {
+			console.log(data);
+			res.json({ data: data });
+		})
+		.catch((err) => console.log(err));
+});
+
+app.post("/updateDonor", (req, res) => {
+	const { donor_id, recently_donated } = req.body;
+	const db = dbService.getDbServiceInstance();
+
+	console.log(donor_id, recently_donated);
+
+	const result = db.updateDonor(donor_id, recently_donated);
+
+	result
+		.then((data) => {
+			console.log(data);
+			res.json({ data: data });
+		})
+		.catch((err) => console.log(err));
+});
+
 app.listen(process.env.PORT, () => console.log("app is running"));

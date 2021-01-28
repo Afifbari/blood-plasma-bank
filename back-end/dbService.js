@@ -147,14 +147,34 @@ class DbService {
 		}
 	}
 
-	async searchDonor(district, seekingBloodGroup, seekingBloodType) {
+	async searchDonor(district, seekingBloodGroup) {
 		try {
 			const response = await new Promise((resolve, reject) => {
 				const query =
-					"SELECT * FROM donor WHERE district = ? AND blood_group = ? AND blood_type = ?;";
+					"SELECT * FROM donor WHERE district = ? AND blood_group = ? AND corona_recovered = ? AND recently_donated = ?;";
 				connection.query(
 					query,
-					[district, seekingBloodGroup, seekingBloodType],
+					[district, seekingBloodGroup, "yes", "no"],
+					(err, results) => {
+						if (err) reject(new Error(err.message));
+						resolve(results);
+					}
+				);
+			});
+			return response;
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	async updateDonor(donor_id, recently_donated) {
+		try {
+			const response = await new Promise((resolve, reject) => {
+				const query =
+					"UPDATE donor SET recently_donated = ? WHERE donor_id = ?;";
+				connection.query(
+					query,
+					[recently_donated, donor_id],
 					(err, results) => {
 						if (err) reject(new Error(err.message));
 						resolve(results);
